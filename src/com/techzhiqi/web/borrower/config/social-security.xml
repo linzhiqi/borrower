@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="socialAuthenticationFilter"
+		class="org.springframework.social.security.SocialAuthenticationFilter"
+		c:_0-ref="authenticationManager" c:_1-ref="userIdSource" c:_2-ref="usersConnectionRepository"
+		c:_3-ref="connectionFactoryLocator" p:signupUrl="/signup"
+		p:rememberMeServices-ref="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices#0" />
+
+	<bean id="socialAuthenticationProvider"
+		class="org.springframework.social.security.SocialAuthenticationProvider"
+		c:_0-ref="usersConnectionRepository" c:_1-ref="socialUsersDetailService" />
+
+	<bean id="socialUsersDetailService"
+		class="com.techzhiqi.web.borrower.security.SimpleSocialUsersDetailService"
+		c:_-ref="jdbcUserService" />
+
+
+<!-- 	<bean id="connectionFactoryLocator"
+		class="org.springframework.social.connect.support.ConnectionFactoryRegistry">
+		<property name="connectionFactories">
+			<list>
+				<bean
+					class="org.springframework.social.facebook.connect.FacebookConnectionFactory">
+					<constructor-arg value="240362226072898" />
+					<constructor-arg value="657532dea6d091ab44a56668c47cca15" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="usersConnectionRepository"
+		class="org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository">
+		<constructor-arg ref="dataSource" />
+		<constructor-arg ref="connectionFactoryLocator" />
+		<constructor-arg ref="textEncryptor" />
+	</bean> -->
+
+</beans>
