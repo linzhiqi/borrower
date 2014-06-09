@@ -75,4 +75,19 @@ public class DealDao {
 		query.setInteger("checked", checked==true?1:0);
 		query.executeUpdate();
 	}
+	
+	public void updateStatus(long id, boolean accept, boolean borrowed, boolean returned){
+		Query query = session().createQuery(
+				"update Deal set accept=:accept, borrowed=:borrowed, returned=:returned " + "where id=:id");
+		query.setLong("id", id);
+		query.setInteger("accept", accept==true?1:0);
+		query.setInteger("borrowed", borrowed==true?1:0);
+		query.setInteger("returned", returned==true?1:0);
+		query.executeUpdate();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Deal> getAllDeals(){
+		return session().createQuery("from Deal").list();
+	}
 }

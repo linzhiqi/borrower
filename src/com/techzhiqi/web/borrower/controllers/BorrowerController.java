@@ -1,6 +1,10 @@
 package com.techzhiqi.web.borrower.controllers;
 
 import java.security.Principal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -34,25 +38,53 @@ public class BorrowerController {
 	@Autowired
 	private ItemDao itemDao;
 
-
+	private SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 
 	@RequestMapping("/mypage")
 	public String showMyPage(Model model, Principal principal) {
 
+		
 		model.addAttribute("deal", new Deal());
-		List<User> users = userDao.getAllUsers();
-		model.addAttribute("users", users);
+
 		model.addAttribute("user", principal.getName());
 		List<Deal> borrowDeals = dealDao
 				.getDealsOnBorrower(principal.getName());
 		List<Deal> lendDealsList = dealDao
 				.getDealsOnLender(principal.getName());
+		System.out.println("!!! received deal:" + lendDealsList);
+		List<Deal> historyBorrowDeals = takeHistoryDealsOut(borrowDeals);
+		List<Deal> historyLendDeals = takeHistoryDealsOut(lendDealsList);
+		System.out.println("!!! received deal after take history out:" + lendDealsList);
 		Deals lendDeals = new Deals();
 		lendDeals.setDeals(lendDealsList);
-		model.addAttribute("borrowdeals", borrowDeals);
-		model.addAttribute("lenddeals", lendDeals);
+		model.addAttribute("borrowdealsvalid", borrowDeals);
+		model.addAttribute("lenddealsvalid", lendDeals);
+		model.addAttribute("borrowdealshistory", historyBorrowDeals);
+		model.addAttribute("lenddealshistory", historyLendDeals);
 
 		return "mypage";
+	}
+
+	private List<Deal> takeHistoryDealsOut(List<Deal> deals) {
+		List<Deal> historyDeals = new ArrayList<Deal>();
+		
+		for(Deal deal : deals){
+			try {
+				if(!deal.isAccept() && formatter.parse(deal.getBorrow_time()).before(new Date())){
+					System.out.println("!!!!history: " + deal.toString());
+					historyDeals.add(deal);
+					
+				}else if(deal.isBorrowed() && deal.isReturned()){
+					System.out.println("!!!!history: " + deal.toString());
+					historyDeals.add(deal);
+				}
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		deals.removeAll(historyDeals);
+		return historyDeals;
 	}
 
 	@RequestMapping(value = "/createdeal", method = RequestMethod.POST)
@@ -77,8 +109,9 @@ public class BorrowerController {
 		List<Deal> list = deals.getDeals();
 		for (Deal deal : list) {
 			System.out.println("deal:" + deal);
-			dealDao.updateBorrowed(deal.getId(), deal.isBorrowed());
-			dealDao.updateReturned(deal.getId(), deal.isReturned());
+//			dealDao.updateBorrowed(deal.getId(), deal.isBorrowed());
+//			dealDao.updateReturned(deal.getId(), deal.isReturned());
+			dealDao.updateStatus(deal.getId(), deal.isAccept(), deal.isBorrowed(), deal.isReturned());
 		}
 		return "redirect:/mypage";
 	}

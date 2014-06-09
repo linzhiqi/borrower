@@ -3,7 +3,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.2.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
@@ -12,11 +14,30 @@
 	<context:component-scan
 		base-package="com.techzhiqi.web.borrower.controllers">
 	</context:component-scan>
+	<!-- <context:component-scan base-package="org.springframework.social.connect.web"/> -->
 	<mvc:annotation-driven></mvc:annotation-driven>
 	<bean id="jspViewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 	<property name="prefix" value="/WEB-INF/jsps/"></property>
 	<property name="suffix" value=".jsp"></property>
 	</bean>
+	<bean id="connectController" class="org.springframework.social.connect.web.ConnectController" autowire="constructor">
+		<property name="connectInterceptors">
+			<list>
+				<bean class="com.techzhiqi.web.borrower.security.PostToWallAfterConnectInterceptor" />
+			</list>
+		</property>
+	</bean> 
 	<mvc:resources location="/resources/" mapping="/static/**" />
+	<task:annotation-driven />
+	
+	
+	<bean id="expirenotifytask"
+		class="com.techzhiqi.web.borrower.schedule.ExpireNotifyTask">
+	</bean>
+	<context:component-scan
+		base-package="com.techzhiqi.web.borrower.util">
+	</context:component-scan>
+	<context:property-placeholder
+		location="classpath:/com/techzhiqi/web/borrower/config/application.properties" />
 </beans>

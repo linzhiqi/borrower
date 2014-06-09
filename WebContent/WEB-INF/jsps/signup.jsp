@@ -14,11 +14,45 @@
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/static/scripts/jquery.leanModal.min.js"></script>
 
-<!-- <script type="text/javascript">
-	$(document).ready(function() {
-		document.f.j_username.focus();
-	});
-</script> -->
+<script type="text/javascript">
+	function onLoad() {
+
+		$("#password").keyup(checkPasswordsMatch);
+		$("#confirmpass").keyup(checkPasswordsMatch);
+		$("#details").submit(canSubmit);
+	}
+
+	function canSubmit() {
+		var password = $("#password").val();
+		var confirmpass = $("#confirmpass").val();	
+		if (password != confirmpass) {
+			alert("password not matched");
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	function checkPasswordsMatch() {
+		var password = $("#password").val();
+		var confirmpass = $("#confirmpass").val();
+
+		if (password.length > 3 || confirmpass.length > 3) {
+
+			if (password == confirmpass) {
+				$("#matchpass").text("password matched");
+				$("#matchpass").addClass("valid");
+				$("#matchpass").removeClass("error");
+			} else {
+				$("#matchpass").text("password not matched");
+				$("#matchpass").addClass("error");
+				$("#matchpass").removeClass("valid");
+			}
+		}
+	}
+
+	$(document).ready(onLoad);
+</script>
 
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -33,125 +67,157 @@
 </head>
 <body>
 
-	<a id="modal_trigger" href="#modal" class="btn">Click here to Login
-		or register</a>
+	<div id="container">
 
-	<div id="modal" class="popupContainer" style="display: none;">
-		<header class="popupHeader"> <span class="header_title">Login</span>
-		<span class="modal_close"><i class="fa fa-times"></i></span> </header>
-
-		<section class="popupBody"> <!-- Social Login -->
-		<div class="social_login">
-			<div class="">
-				<a href="<c:url value="/auth/facebook"/>" class="social_box fb">
-					<span class="icon"><i class="fa fa-facebook"></i></span> <span
-					class="icon_title">Connect with Facebook</span>
-
-				</a> <a href="#" class="social_box google"> <span class="icon"><i
-						class="fa fa-google-plus"></i></span> <span class="icon_title">Connect
-						with Google</span>
-				</a>
+		<div id="fixedHeader">
+			<div id="logo">
+				<a href="<c:url value="/mypage"/>">Borrower</a>
 			</div>
-
-			<div class="centeredText">
-				<span>Or use your Email address</span>
-			</div>
-
-			<div class="action_btns">
-				<div class="one_half">
-					<a href="#" id="login_form" class="btn">Login</a>
-				</div>
-				<div class="one_half last">
-					<a href="#" id="register_form" class="btn">Sign up</a>
-				</div>
+			<div id="login">
+				<a class="login" id="modal_trigger" href="#modal">Sign in</a>
 			</div>
 		</div>
 
-		<!-- Username & Password Login form -->
-		<div class="user_login">
-			<form name='f'
-				action='${pageContext.request.contextPath}/j_spring_security_check'
-				method='POST'>
-				<c:if test="${param.loginerror != null}">
 
-					<p class="error">Login failed. Check that your username and
-						password are correct.</p>
+		<div id="modal" class="popupContainer" style="display: none;">
+			<header class="popupHeader"> <span class="header_title">Login</span>
+			<span class="modal_close"><i class="fa fa-times"></i></span> </header>
 
-				</c:if>
-				<label>Username</label> <input type='text' name='j_username'
-					value=''> <br /> <label>Password</label> <input
-					type='password' name='j_password' /> <br />
-				<div class="checkbox">
-					<input type='checkbox' name='_spring_security_remember_me'
-						checked="checked" /> <label for="remember">Remember me on
-						this computer</label>
+			<section class="popupBody"> <!-- Social Login -->
+			<div class="social_login">
+				<div class="">
+					<a href="<c:url value="/auth/facebook"/>" class="social_box fb">
+						<span class="icon"><i class="fa fa-facebook"></i></span> <span
+						class="icon_title">Connect with Facebook</span>
+
+					</a> <a href="<c:url value="/auth/linkedin"/>"
+						class="social_box google"> <span class="icon"><i
+							class="fa fa-linkedin-square"></i></span> <span class="icon_title">Connect
+							with Linkedin</span>
+					</a>
+				</div>
+
+				<div class="centeredText">
+					<span>Or use your Email address</span>
 				</div>
 
 				<div class="action_btns">
 					<div class="one_half">
-						<a href="#" class="btn back_btn"><i
-							class="fa fa-angle-double-left"></i> Back</a>
+						<a href="#" id="login_form" class="btn">Login</a>
 					</div>
 					<div class="one_half last">
-						<input name="submit" type="submit" value="Login"
-							class="btn btn_red" />
+						<a href="#" id="register_form" class="btn">Sign up</a>
 					</div>
 				</div>
-			</form>
+			</div>
 
-			<a href="#" class="forgot_password">Forgot password?</a>
+			<!-- Username & Password Login form -->
+			<div class="user_login">
+				<form name='f'
+					action='${pageContext.request.contextPath}/j_spring_security_check'
+					method='POST'>
+					<c:if test="${param.loginerror != null}">
+
+						<p class="error">Login failed. Check that your username and
+							password are correct.</p>
+
+					</c:if>
+					<label>Username</label> <input type='text' name='j_username'
+						value=''> <br /> <label>Password</label> <input
+						type='password' name='j_password' /> <br />
+					<div class="checkbox">
+						<input type='checkbox' name='_spring_security_remember_me'
+							checked="checked" /> <label for="remember">Remember me
+							on this computer</label>
+					</div>
+
+					<div class="action_btns">
+						<div class="one_half">
+							<a href="#" class="btn back_btn"><i
+								class="fa fa-angle-double-left"></i> Back</a>
+						</div>
+						<div class="one_half last">
+							<input name="submit" type="submit" value="Login"
+								class="btn btn_red" />
+						</div>
+					</div>
+				</form>
+
+				<a href="#" class="forgot_password">Forgot password?</a>
+			</div>
+
+			<!-- Register Form -->
+			<div class="user_register">
+				<sf:form id="details" method="post"
+					action="${pageContext.request.contextPath}/signup"
+					commandName="user">
+					<label>User Name</label>
+					<sf:input path="username" name="username" type="text" />
+					<div class="error">
+						<sf:errors path="username"></sf:errors>
+					</div>
+					<label>Name</label>
+					<sf:input path="name" name="name" type="text" />
+					<div class="error">
+						<sf:errors path="name"></sf:errors>
+					</div>
+					<label>Email Address</label>
+					<sf:input path="email" name="email" type="text" />
+					<div class="error">
+						<sf:errors path="email"></sf:errors>
+					</div>
+					<label>Password</label>
+					<sf:input id="password" path="password" name="password"
+						type="password" />
+					<div class="error">
+						<sf:errors path="password"></sf:errors>
+					</div>
+					<label>Confirm Password</label>
+					<input id="confirmpass" name="confirmpass" type="password" />
+					<div id="matchpass"></div>
+
+					<div class="checkbox">
+						<input id="send_updates" type="checkbox" /> <label
+							for="send_updates">Send me occasional email updates</label>
+					</div>
+
+					<div class="action_btns">
+						<div class="one_half">
+							<a href="#" class="btn back_btn"><i
+								class="fa fa-angle-double-left"></i> Back</a>
+						</div>
+						<div class="one_half last">
+							<input class="btn btn_red"
+								value="Create account" type="submit" />
+
+						</div>
+					</div>
+				</sf:form>
+			</div>
+			</section>
 		</div>
 
-		<!-- Register Form -->
-		<div class="user_register">
-			<sf:form id="details" method="post"
-				action="${pageContext.request.contextPath}/signup"
-				commandName="user">
-				<label>User Name</label>
-				<sf:input path="username" name="username" type="text" />
-				<br />
-				<div class="error">
-					<sf:errors path="username"></sf:errors>
-				</div>
-				<label>Name</label>
-				<sf:input path="name" name="name" type="text" />
-				<br />
-				<div class="error">
-					<sf:errors path="name"></sf:errors>
-				</div>
-				<label>Email Address</label>
-				<sf:input path="email" name="email" type="text" />
-				<div class="error">
-					<sf:errors path="email"></sf:errors>
-				</div>
-				<label>Password</label>
-				<sf:input id="password" path="password" name="password"
-					type="password" />
-				<div class="error">
-					<sf:errors path="password"></sf:errors>
-				</div>
-				<label>Confirm Password</label>
-				<input id="confirmpass" name="confirmpass" type="password" />
-				<div id="matchpass"></div>
-
-				<div class="checkbox">
-					<input id="send_updates" type="checkbox" /> <label
-						for="send_updates">Send me occasional email updates</label>
-				</div>
-
-				<div class="action_btns">
-					<div class="one_half">
-						<a href="#" class="btn back_btn"><i
-							class="fa fa-angle-double-left"></i> Back</a>
-					</div>
-					<div class="one_half last">
-						<input class="btn btn_red" value="Create account" type="submit" />
-
-					</div>
-				</div>
-			</sf:form>
+		<div id="contentPage">
+			<div id="content">
+				<h2>Use flow guide</h2>
+				khkjhdsfsdafdf <br> khkjhdsfsdafdf <br> khkjhdsfsdafdf <br>
+				khkjhdsfsdafdf <br> khkjhdsfsdafdf <br> khkjhdsfsdafdf <br>
+				khkjhdsfsdafdf <br> khkjhdsfsdafdf <br> khkjhdsfsdafdf <br>
+				khkjhdsfsdafdf <br> khkjhdsfsdafdf <br> khkjhdsfsdafdf <br>
+				khkjhdsfsdafdf <br> khkjhdsfsdafdf <br> khkjhdsfsdafdf <br>
+				khkjhdsfsdafdf <br> khkjhdsfsdafdf <br> khkjhdsfsdafdf <br>
+				khkjhdsfsdafdf <br> khkjhdsfsdafdf <br> khkjhdsfsdafdf <br>
+				khkjhdsfsdafdf <br> khkjhdsfsdafdf <br> khkjhdsfsdafdf <br>
+				khkjhdsfsdafdf <br> khkjhdsfsdafdf <br> khkjhdsfsdafdf <br>
+				khkjhdsfsdafdf <br> khkjhdsfsdafdf <br> khkjhdsfsdafdf <br>
+				khkjhdsfsdafdf <br> khkjhdsfsdafdf <br> khkjhdsfsdafdf <br>
+				khkjhdsfsdafdf <br> khkjhdsfsdafdf <br> khkjhdsfsdafdf <br>
+				khkjhdsfsdafdf <br> khkjhdsfsdafdf <br>
+			</div>
 		</div>
-		</section>
+	</div>
+	<div id="loadingDialog">
+		<p>loading...</p>
 	</div>
 
 	<%-- 	<sec:authorize access="!isAuthenticated()">
@@ -166,7 +232,7 @@
 	</sec:authorize> --%>
 	<script type="text/javascript">
 		$("#modal_trigger").leanModal({
-			top : 200,
+			top : 50,
 			overlay : 0.6,
 			closeButton : ".modal_close"
 		});
@@ -196,7 +262,13 @@
 				return false;
 			});
 
-		})
+			$(".social_box").click(function() {
+				$(".modal_close").trigger('click');
+				$("#loadingDialog").show();
+				return true;
+			});
+
+		});
 	</script>
 
 	<c:if test="${param.loginerror != null}">
@@ -208,15 +280,29 @@
 		</script>
 	</c:if>
 
+	<c:if test="${signuperror == true}">
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('#modal_trigger').trigger('click');
+				$('#register_form').trigger('click');
+			});
+		</script>
+	</c:if>
 
+	<c:if test="${user.username != null}">
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('#modal_trigger').trigger('click');
+				$('#register_form').trigger('click');
+			});
+		</script>
+	</c:if>
+	
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$('#modal_trigger').trigger('click');
 			$('#register_form').trigger('click');
 		});
 	</script>
-
-
-
 </body>
 </html>

@@ -39,6 +39,7 @@ public class Deal {
 	private Date return_time;
 	private boolean borrowed = false;
 	private boolean returned = false;
+	private boolean accept = false;
 	
 	@Transient
 	private SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
@@ -220,6 +221,14 @@ public class Deal {
 		this.return_time = return_time;
 		this.borrowed = borrowed;
 		this.returned = returned;
+	}
+
+	public boolean isAccept() {
+		return accept;
+	}
+
+	public void setAccept(boolean accept) {
+		this.accept = accept;
 	}
 
 
